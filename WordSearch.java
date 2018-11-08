@@ -7,8 +7,12 @@ public class WordSearch {
      *@param col is the starting width of the WordSearch
      */
     public WordSearch(int rows,int cols) {
-      data = new char[rows][cols];
-      this.clear();
+      if ((rows > 0) && (cols > 0)) {
+        data = new char[rows][cols];
+        this.clear();
+      } else {
+        throw new IllegalArgumentException("error, negative index(es)");
+      }
     }
 
     public int rowLength() {
