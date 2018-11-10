@@ -30,7 +30,7 @@ public class WordSearch{
       return this.data.length;
     }
 
-    public int columnLength() {
+    public int colLength() {
       return this.data[0].length;
     }
 
@@ -62,10 +62,16 @@ public class WordSearch{
 
     private boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
       if ((rowIncrement == 0) && (colIncrement == 0)) {
-        return false
+        return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= rowLength) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= colLength) && ((c + (colIncrement * wordLength)) >= -1))
+        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= rowLength()) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= colLength()) && ((c + (colIncrement * wordLength)) >= -1)) {
+          for(int i = 0; i < wordLength; i++) {
+            this.data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
+          }
+          return true;
+        }
+        return false;
       }
     }
    //  /**Attempts to add a given word to the specified position of the WordGrid.
