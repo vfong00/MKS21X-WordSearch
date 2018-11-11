@@ -12,6 +12,7 @@ public class WordSearch {
     private ArrayList<String>wordsToAdd;
     //all words that were successfully added get moved into wordsAdded.
     private ArrayList<String>wordsAdded;
+    private ArrayList<String>words;
 
     /**Initialize the grid to the size specified
      *and fill all of the positions with '_'
@@ -23,6 +24,7 @@ public class WordSearch {
         data = new char[rows][cols];
         height = this.data.length;
         width = this.data[0].length;
+        words = new ArrayList<String>();
         wordsToAdd = new ArrayList<String>();
         wordsAdded = new ArrayList<String>();
         seed = (int) System.currentTimeMillis();
@@ -34,7 +36,9 @@ public class WordSearch {
           Scanner sc = new Scanner(file);
 
           while (sc.hasNext()) {
-            wordsToAdd.add(sc.nextLine());
+            String newWord = sc.nextLine().toUpperCase();
+            wordsToAdd.add(newWord);
+            words.add(newWord);
           }
 
           this.addAllWords();
@@ -53,6 +57,7 @@ public class WordSearch {
         data = new char[rows][cols];
         height = this.data.length;
         width = this.data[0].length;
+        words = new ArrayList<String>();
         wordsToAdd = new ArrayList<String>();
         wordsAdded = new ArrayList<String>();
         seed = randSeed;
@@ -64,10 +69,12 @@ public class WordSearch {
           Scanner sc = new Scanner(file);
 
           while (sc.hasNext()) {
-            wordsToAdd.add(sc.nextLine());
+            String newWord = sc.nextLine().toUpperCase();
+            wordsToAdd.add(newWord);
+            words.add(newWord);
           }
 
-          //this.addAllWords();
+          this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -101,12 +108,18 @@ public class WordSearch {
             ans += " ";
           }
         }
-        if (i != height - 1) {
-          ans += "|\n";
+        ans += "|\n";
+      }
+      ans += "Words: ";
+      for (int k = 0; k < words.size(); k++) {
+        ans += words.get(k);
+        if (k != words.size() - 1) {
+          ans += ", ";
         } else {
-          ans += "|";
+          ans += "  ";
         }
       }
+      ans += "(seed: "+ seed + ")";
       return ans;
     }
 
@@ -123,6 +136,9 @@ public class WordSearch {
             } else {
               atPlace += this.data[r + (i * rowIncrement)][c + (i * colIncrement)];
             }
+          }
+          if (this.data[r + (rowIncrement * wordLength)][c + (colIncrement * wordLength)] != '_') {
+            return false;
           }
           if (atPlace.equals(word)) {
             return false;
@@ -143,21 +159,36 @@ public class WordSearch {
       int cPos = 0;
       int wordIndex = 0;
       String randWord = "";
+      boolean notadded = true;
+      int noPos = 0;
+      int failures = 0;
       while (!(wordsToAdd.isEmpty())) {
+        notadded = true;
         wordIndex = randgen.nextInt(wordsToAdd.size());
         randWord = wordsToAdd.get(wordIndex);
         rInc = randgen.nextInt(3) - 1;
         cInc = randgen.nextInt(3) - 1;
-        rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
-        if (rInc == -1) {
-          rPos += randWord.length() - 1;
+        while (notadded) {
+          noPos++;
+          rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
+          if (rInc == -1) {
+            rPos += randWord.length() - 1;
+          }
+          cPos = randgen.nextInt(height - (Math.abs(rInc) * (randWord.length() - 1)));
+          if (cInc == -1) {
+            cPos += randWord.length() - 1;
+          }
+          if (this.addWord(rPos,cPos,randWord,rInc,cInc)) {
+            wordsToAdd.remove(randWord);
+            wordsAdded.add(randWord);
+            notadded = false;
+          }
+          if (noPos > 10) {
+            wordsToAdd.remove(randWord);
+            failures++;
+            notadded = false;
+          }
         }
-        cPos = randgen.nextInt(height - (Math.abs(rInc) * (randWord.length() - 1)));
-        if (cInc == -1) {
-          cPos += randWord.length() - 1;
-        }
-
-        wordsToAdd.remove(randWord);
       }
     }
 }
