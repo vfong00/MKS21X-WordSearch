@@ -41,8 +41,34 @@ public class WordSearch {
           e.printStackTrace();
           System.exit(1);
         }
+      } else {
+        throw new IllegalArgumentException("error, negative index(es)");
+      }
+    }
 
+    public WordSearch(int rows,int cols, String filename, int randSeed) {
+      if ((rows > 0) && (cols > 0)) {
+        data = new char[rows][cols];
+        height = this.data.length;
+        width = this.data[0].length;
+        wordsToAdd = new ArrayList<String>();
+        wordsAdded = new ArrayList<String>();
+        seed = randSeed;
+        randgen = new Random(randSeed);
+        this.clear();
 
+        try {
+          File file = new File(filename);
+          Scanner sc = new Scanner(file);
+
+          while (sc.hasNext()) {
+            wordsToAdd.add(sc.nextLine());
+          }
+        } catch (FileNotFoundException e) {
+          System.out.println("File not found: " + filename);
+          e.printStackTrace();
+          System.exit(1);
+        }
       } else {
         throw new IllegalArgumentException("error, negative index(es)");
       }
