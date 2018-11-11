@@ -1,8 +1,9 @@
 import java.util.*; //random, scanner, arraylist
 import java.io.*; //file, filenotfoundexception
-public class WordSearch{
+public class WordSearch {
     private char[][]data;
-
+    private int width;
+    private int height;
     //the random seed used to produce this WordSearch
     private int seed;
     //a random Object to unify your random calls
@@ -17,27 +18,40 @@ public class WordSearch{
      *@param row is the starting height of the WordSearch
      *@param col is the starting width of the WordSearch
      */
-    public WordSearch(int rows,int cols) {
+    public WordSearch(int rows,int cols, String filename) {
       if ((rows > 0) && (cols > 0)) {
         data = new char[rows][cols];
+        height = this.data.length;
+        width = this.data[0].length;
+        wordsToAdd = new ArrayList<String>();
+        wordsAdded = new ArrayList<String>();
+        seed = (int) System.currentTimeMillis();
+        randgen = new Random();
         this.clear();
+
+        try {
+          File file = new File(filename);
+          Scanner sc = new Scanner(file);
+
+          while (sc.hasNext()) {
+            wordsToAdd.add(sc.nextLine());
+          }
+        } catch (FileNotFoundException e) {
+          System.out.println("File not found: " + filename);
+          e.printStackTrace();
+          System.exit(1);
+        }
+
+
       } else {
         throw new IllegalArgumentException("error, negative index(es)");
       }
     }
 
-    public int rowLength() {
-      return this.data.length;
-    }
-
-    public int colLength() {
-      return this.data[0].length;
-    }
-
     /**Set all values in the WordSearch to underscores'_'*/
     private void clear() {
-      for (int i = 0; i < this.data.length; i++) {
-        for (int j = 0; j < this.data[i].length; j++) {
+      for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
           this.data[i][j] = '_';
         }
       }
@@ -49,23 +63,29 @@ public class WordSearch{
      */
     public String toString() {
       String ans = "";
-      for (int i = 0; i < this.data.length; i++) {
-        for (int j = 0; j < this.data[i].length; j++) {
-          ans += this.data[i][j] + " ";
+      for (int i = 0; i < height; i++) {
+        ans += "|";
+        for (int j = 0; j < width; j++) {
+          ans += this.data[i][j];
+          if (j != width - 1) {
+            ans += " ";
+          }
         }
-        if (i != this.data.length - 1) {
-          ans += "\n";
+        if (i != height - 1) {
+          ans += "|\n";
+        } else {
+          ans += "|";
         }
       }
       return ans;
     }
 
-    private boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
+    public boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
       if ((rowIncrement == 0) && (colIncrement == 0)) {
         return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= rowLength()) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= colLength()) && ((c + (colIncrement * wordLength)) >= -1)) {
+        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= width) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= height) && ((c + (colIncrement * wordLength)) >= -1)) {
           for(int i = 0; i < wordLength; i++) {
             this.data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
           }
@@ -74,71 +94,4 @@ public class WordSearch{
         return false;
       }
     }
-   //  /**Attempts to add a given word to the specified position of the WordGrid.
-   //   *The word is added from left to right, must fit on the WordGrid, and must
-   //   *have a corresponding letter to match any letters that it overlaps.
-   //   *
-   //   *@param word is any text to be added to the word grid.
-   //   *@param row is the vertical locaiton of where you want the word to start.
-   //   *@param col is the horizontal location of where you want the word to start.
-   //   *@return true when the word is added successfully. When the word doesn't fit,
-   //   * or there are overlapping letters that do not match, then false is returned
-   //   * and the board is NOT modified.
-   //   */
-   //  public boolean addWordHorizontal(String word,int row, int col) {
-   //    int wordLength = word.length();
-   //    if ((row < this.rowLength()) && (row >= 0) && ((wordLength + col) <= this.columnLength()) && (col >= 0)) {
-   //      for(int i = col; i < (col + wordLength); i++) {
-   //        this.data[row][i] = word.charAt(i - col);
-   //      }
-   //      return true;
-   //    } else {
-   //      return false;
-   //    }
-   //  }
-   //
-   // /**Attempts to add a given word to the specified position of the WordGrid.
-   //   *The word is added from top to bottom, must fit on the WordGrid, and must
-   //   *have a corresponding letter to match any letters that it overlaps.
-   //   *
-   //   *@param word is any text to be added to the word grid.
-   //   *@param row is the vertical locaiton of where you want the word to start.
-   //   *@param col is the horizontal location of where you want the word to start.
-   //   *@return true when the word is added successfully. When the word doesn't fit,
-   //   *or there are overlapping letters that do not match, then false is returned.
-   //   *and the board is NOT modified.
-   //   */
-   //  public boolean addWordVertical(String word,int row, int col) {
-   //    int wordLength = word.length();
-   //    if ((col < this.columnLength()) && (col >= 0) && ((wordLength + row) <= this.rowLength()) && (row >= 0)) {
-   //      for(int i = row; i < (row + wordLength); i++) {
-   //        this.data[i][col] = word.charAt(i - row);
-   //      }
-   //      return true;
-   //    } else {
-   //      return false;
-   //    }
-   //  }
-   //
-   //  /**Attempts to add a given word to the specified position of the WordGrid.
-   //   *The word is added from top left to bottom right, must fit on the WordGrid,
-   //   *and must have a corresponding letter to match any letters that it overlaps.
-   //   *
-   //   *@param word is any text to be added to the word grid.
-   //   *@param row is the vertical locaiton of where you want the word to start.
-   //   *@param col is the horizontal location of where you want the word to start.
-   //   *@return true when the word is added successfully. When the word doesn't fit,
-   //   *or there are overlapping letters that do not match, then false is returned.
-   //   */
-   //  public boolean addWordDiagonal(String word,int row, int col) {
-   //    int wordLength = word.length();
-   //    if (((wordLength + col) <= this.columnLength()) && (col >= 0) && ((wordLength + row) <= this.rowLength()) && (row >= 0)) {
-   //      for(int i = 0; i < wordLength; i++) {
-   //        this.data[row + i][col + i] = word.charAt(i);
-   //      }
-   //      return true;
-   //    } else {
-   //      return false;
-   //    }
-   //  }
 }
