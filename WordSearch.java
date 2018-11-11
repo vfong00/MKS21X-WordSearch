@@ -37,7 +37,7 @@ public class WordSearch {
             wordsToAdd.add(sc.nextLine());
           }
 
-          // this.addAllWords();
+          this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -67,7 +67,7 @@ public class WordSearch {
             wordsToAdd.add(sc.nextLine());
           }
 
-          // this.addAllWords();
+          //this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -116,13 +116,16 @@ public class WordSearch {
       } else {
         int wordLength = word.length();
         if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= width) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= height) && ((c + (colIncrement * wordLength)) >= -1)) {
+          String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
-            if (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') {
+            if ((this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
               return false;
+            } else {
+              atPlace += this.data[r + (i * rowIncrement)][c + (i * colIncrement)];
             }
-            // if ((this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
-            //   return false;
-            // }
+          }
+          if (atPlace.equals(word)) {
+            return false;
           }
           for (int i = 0; i < wordLength; i++) {
             this.data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
@@ -145,17 +148,16 @@ public class WordSearch {
         randWord = wordsToAdd.get(wordIndex);
         rInc = randgen.nextInt(3) - 1;
         cInc = randgen.nextInt(3) - 1;
-
         rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
         if (rInc == -1) {
           rPos += randWord.length() - 1;
         }
         cPos = randgen.nextInt(height - (Math.abs(rInc) * (randWord.length() - 1)));
         if (cInc == -1) {
-          height += randWord.length() - 1;
+          cPos += randWord.length() - 1;
         }
 
-
+        wordsToAdd.remove(randWord);
       }
     }
 }
