@@ -135,8 +135,16 @@ public class WordSearch {
       while (!(wordsToAdd.isEmpty())) {
         wordIndex = randgen.nextInt(wordsToAdd.size());
         randWord = wordsToAdd.get(wordIndex);
-        System.out.println(randWord);
-        wordsToAdd.remove(randWord);
+        rInc = randgen.nextInt(3) - 1;
+        cInc = randgen.nextInt(3) - 1;
+        rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
+        if (rInc == -1) {
+          rPos += randWord.length() - 1;
+        }
+        cPos = randgen.nextInt(height - (Math.abs(rInc) * (randWord.length() - 1)));
+        if (cInc == -1) {
+          height += randWord.length() - 1;
+        }
       }
     }
 }
