@@ -36,6 +36,8 @@ public class WordSearch {
           while (sc.hasNext()) {
             wordsToAdd.add(sc.nextLine());
           }
+
+          this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -64,6 +66,8 @@ public class WordSearch {
           while (sc.hasNext()) {
             wordsToAdd.add(sc.nextLine());
           }
+
+          this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -106,7 +110,7 @@ public class WordSearch {
       return ans;
     }
 
-    public boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
+    private boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
       if ((rowIncrement == 0) && (colIncrement == 0)) {
         return false;
       } else {
@@ -118,6 +122,21 @@ public class WordSearch {
           return true;
         }
         return false;
+      }
+    }
+
+    private void addAllWords() {
+      int rInc = 0;
+      int cInc = 0;
+      int rPos = 0;
+      int cPos = 0;
+      int wordIndex = 0;
+      String randWord = "";
+      while (!(wordsToAdd.isEmpty())) {
+        wordIndex = randgen.nextInt(wordsToAdd.size());
+        randWord = wordsToAdd.get(wordIndex);
+        System.out.println(randWord);
+        wordsToAdd.remove(randWord);
       }
     }
 }
