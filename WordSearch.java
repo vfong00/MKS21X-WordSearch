@@ -21,7 +21,7 @@ public class WordSearch {
      */
     public WordSearch(int rows,int cols, String filename) {
       if ((rows > 0) && (cols > 0)) {
-        data = new char[cols][rows];
+        data = new char[rows][cols];
         height = this.data.length;
         width = this.data[0].length;
         words = new ArrayList<String>();
@@ -41,7 +41,7 @@ public class WordSearch {
             words.add(newWord);
           }
 
-          this.addAllWords();
+          // this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -54,7 +54,7 @@ public class WordSearch {
 
     public WordSearch(int rows,int cols, String filename, int randSeed) {
       if ((rows > 0) && (cols > 0)) {
-        data = new char[cols][rows];
+        data = new char[rows][cols];
         height = this.data.length;
         width = this.data[0].length;
         words = new ArrayList<String>();
@@ -74,7 +74,7 @@ public class WordSearch {
             words.add(newWord);
           }
 
-           this.addAllWords();
+          // this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -123,25 +123,25 @@ public class WordSearch {
       return ans;
     }
 
-    private boolean addWord(int r, int c, String word, int rowIncrement, int colIncrement) {
+    public boolean addWord(String word, int r, int c, int rowIncrement, int colIncrement) {
       if ((rowIncrement == 0) && (colIncrement == 0)) {
         return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= width) && ((r + (rowIncrement * wordLength)) > -1) && ((c + (colIncrement * wordLength)) <= height) && ((c + (colIncrement * wordLength)) > -1)) {
+        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= height) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= width) && ((c + (colIncrement * wordLength)) >= -1)) {
           String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
-            if ((this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != '_') && (this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
+            if ((this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
               return false;
             } else {
-              atPlace += this.data[c + (i * colIncrement)][r + (i * rowIncrement)];
+              atPlace += this.data[r + (i * rowIncrement)][c + (i * colIncrement)];
             }
           }
           if (atPlace.equals(word)) {
             return false;
           }
           for (int i = 0; i < wordLength; i++) {
-            this.data[c + (i * colIncrement)][r + (i * rowIncrement)] = word.charAt(i);
+            this.data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
           }
           return true;
         }
@@ -149,7 +149,7 @@ public class WordSearch {
       }
     }
 
-    private void addAllWords() {
+    public void addAllWords() {
       int rInc = 0;
       int cInc = 0;
       int rPos = 0;
@@ -180,7 +180,7 @@ public class WordSearch {
           if (cInc == -1) {
             cPos += randWord.length() - 1;
           }
-          if (this.addWord(rPos,cPos,randWord,rInc,cInc)) {
+          if (this.addWord(randWord,rPos,cPos,rInc,cInc)) {
             wordsToAdd.remove(randWord);
             wordsAdded.add(randWord);
             notadded = false;
