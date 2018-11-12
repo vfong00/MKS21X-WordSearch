@@ -165,7 +165,6 @@ public class WordSearch {
         randWord = wordsToAdd.get(wordIndex);
         // i got real inspired what in tarnation
         while (notadded) {
-          System.out.println(randWord);
           rInc = randgen.nextInt(3) - 1;
           cInc = randgen.nextInt(3) - 1;
           while ((rInc == 0) && (cInc == 0)) {
