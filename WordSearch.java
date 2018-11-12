@@ -74,7 +74,7 @@ public class WordSearch {
             words.add(newWord);
           }
 
-          this.addAllWords();
+           this.addAllWords();
         } catch (FileNotFoundException e) {
           System.out.println("File not found: " + filename);
           e.printStackTrace();
@@ -128,7 +128,7 @@ public class WordSearch {
         return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= width) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= height) && ((c + (colIncrement * wordLength)) >= -1)) {
+        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) < width) && ((r + (rowIncrement * wordLength)) > -1) && ((c + (colIncrement * wordLength)) < height) && ((c + (colIncrement * wordLength)) > -1)) {
           String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
             if ((this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
@@ -136,9 +136,6 @@ public class WordSearch {
             } else {
               atPlace += this.data[r + (i * rowIncrement)][c + (i * colIncrement)];
             }
-          }
-          if (this.data[r + (rowIncrement * wordLength)][c + (colIncrement * wordLength)] != '_') {
-            return false;
           }
           if (atPlace.equals(word)) {
             return false;
@@ -168,13 +165,18 @@ public class WordSearch {
         randWord = wordsToAdd.get(wordIndex);
         rInc = randgen.nextInt(3) - 1;
         cInc = randgen.nextInt(3) - 1;
+        while ((rInc == 0) && (cInc == 0)) {
+          rInc = randgen.nextInt(3) - 1;
+          cInc = randgen.nextInt(3) - 1;
+        }
+        System.out.println(randWord);
         while (notadded) {
           noPos++;
           rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
           if (rInc == -1) {
             rPos += randWord.length() - 1;
           }
-          cPos = randgen.nextInt(height - (Math.abs(rInc) * (randWord.length() - 1)));
+          cPos = randgen.nextInt(height - (Math.abs(cInc) * (randWord.length() - 1)));
           if (cInc == -1) {
             cPos += randWord.length() - 1;
           }
@@ -182,11 +184,13 @@ public class WordSearch {
             wordsToAdd.remove(randWord);
             wordsAdded.add(randWord);
             notadded = false;
+            noPos = 0;
           }
-          if (noPos > 10) {
+          if (noPos > 500) {
             wordsToAdd.remove(randWord);
             failures++;
             notadded = false;
+            noPos = 0;
           }
         }
       }
