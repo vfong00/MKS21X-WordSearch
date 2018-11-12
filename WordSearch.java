@@ -121,7 +121,10 @@ public class WordSearch {
       return ans;
     }
 
-    public boolean addWord(String word, int r, int c, int rowIncrement, int colIncrement) {
+    private boolean addWord(String word, int r, int c, int rowIncrement, int colIncrement) {
+      if (word.length() == 0) {
+        return false;
+      }
       if ((rowIncrement == 0) && (colIncrement == 0)) {
         return false;
       } else {
@@ -147,7 +150,7 @@ public class WordSearch {
       }
     }
 
-    public void addAllWords() {
+    private void addAllWords() {
       int rInc = 0;
       int cInc = 0;
       int rPos = 0;
@@ -184,7 +187,7 @@ public class WordSearch {
             notadded = false;
             noPos = 0;
           }
-          if (noPos > 1000) {
+          if (noPos > 500) {
             wordsToAdd.remove(randWord);
             words.remove(randWord);
             failures++;
