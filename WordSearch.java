@@ -1,5 +1,6 @@
 import java.util.*; //random, scanner, arraylist
 import java.io.*; //file, filenotfoundexception
+
 public class WordSearch {
     private char[][]data;
     private int width;
@@ -15,9 +16,12 @@ public class WordSearch {
     private ArrayList<String>words;
 
     /**Initialize the grid to the size specified
-     *and fill all of the positions with '_'
+     *and fill all of the positions with '_',
+     *then add all the words from the given textfile
+     *randomly, based on a Random object of default seed.
      *@param row is the starting height of the WordSearch
      *@param col is the starting width of the WordSearch
+     *@param filename is the textfile from which the words of the WordSearch come from
      */
     public WordSearch(int rows,int cols, String filename) {
       if ((rows > 0) && (cols > 0)) {
@@ -51,6 +55,13 @@ public class WordSearch {
       }
     }
 
+    /**The same as the first constructor but with a given seed
+     *for the Random object for word addition.
+     *@param row is the starting height of the WordSearch
+     *@param col is the starting width of the WordSearch
+     *@param filename is the textfile from which the words of the WordSearch come from
+     *@param randSeed is the seed for the Random object that initializes the WordSearch
+     */
     public WordSearch(int rows,int cols, String filename, int randSeed) {
       if ((rows > 0) && (cols > 0)) {
         data = new char[rows][cols];
@@ -92,9 +103,9 @@ public class WordSearch {
       }
     }
 
-    /**Each row is a new line, there is a space between each letter
+    /**Each row is a new line of the WordSearch, there is a space between each letter
      *@return a String with each character separated by spaces, and rows
-     *separated by newlines.
+     *separated by newlines, and borders on the left and right.
      */
     public String toString() {
       String ans = "";
@@ -121,6 +132,14 @@ public class WordSearch {
       return ans;
     }
 
+    /**Helper function for addAllWords, attempts to adds one word into WordSearch
+     *@param word is the word to be added
+     *@param r is the starting row where the word is added
+     *@param c is the starting column where the word is added
+     *@param rowIncrement is the increment between each letter by row position
+     *@param colIncrement is the increment between each letter by column position
+     *@return true if addition was successful, false otherwise.
+     */
     private boolean addWord(String word, int r, int c, int rowIncrement, int colIncrement) {
       if (word.length() == 0) {
         return false;
@@ -150,6 +169,11 @@ public class WordSearch {
       }
     }
 
+    /**Function that operates within constructor to add all words.
+    /*If a word cannot be added after 1000 tries of an algorithm (rare),
+    /*it is removedfrom the word list. Otherwise, it is added to a random
+    /*location, with random increments.
+    */
     private void addAllWords() {
       int rInc = 0;
       int cInc = 0;
