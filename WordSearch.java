@@ -21,7 +21,7 @@ public class WordSearch {
      */
     public WordSearch(int rows,int cols, String filename) {
       if ((rows > 0) && (cols > 0)) {
-        data = new char[rows][cols];
+        data = new char[cols][rows];
         height = this.data.length;
         width = this.data[0].length;
         words = new ArrayList<String>();
@@ -54,7 +54,7 @@ public class WordSearch {
 
     public WordSearch(int rows,int cols, String filename, int randSeed) {
       if ((rows > 0) && (cols > 0)) {
-        data = new char[rows][cols];
+        data = new char[cols][rows];
         height = this.data.length;
         width = this.data[0].length;
         words = new ArrayList<String>();
@@ -131,17 +131,17 @@ public class WordSearch {
         if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) < width) && ((r + (rowIncrement * wordLength)) > -1) && ((c + (colIncrement * wordLength)) < height) && ((c + (colIncrement * wordLength)) > -1)) {
           String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
-            if ((this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (this.data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
+            if ((this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != '_') && (this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
               return false;
             } else {
-              atPlace += this.data[r + (i * rowIncrement)][c + (i * colIncrement)];
+              atPlace += this.data[c + (i * colIncrement)][r + (i * rowIncrement)];
             }
           }
           if (atPlace.equals(word)) {
             return false;
           }
           for (int i = 0; i < wordLength; i++) {
-            this.data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
+            this.data[c + (i * colIncrement)][r + (i * rowIncrement)] = word.charAt(i);
           }
           return true;
         }
@@ -163,13 +163,15 @@ public class WordSearch {
         notadded = true;
         wordIndex = randgen.nextInt(wordsToAdd.size());
         randWord = wordsToAdd.get(wordIndex);
-        rInc = randgen.nextInt(3) - 1;
-        cInc = randgen.nextInt(3) - 1;
-        while ((rInc == 0) && (cInc == 0)) {
+        // i got real inspired what in tarnation
+        while (notadded) {
+          System.out.println(randWord);
           rInc = randgen.nextInt(3) - 1;
           cInc = randgen.nextInt(3) - 1;
-        }
-        while (notadded) {
+          while ((rInc == 0) && (cInc == 0)) {
+            rInc = randgen.nextInt(3) - 1;
+            cInc = randgen.nextInt(3) - 1;
+          }
           noPos++;
           rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
           if (rInc == -1) {
@@ -185,8 +187,9 @@ public class WordSearch {
             notadded = false;
             noPos = 0;
           }
-          if (noPos > 500) {
+          if (noPos > 1000) {
             wordsToAdd.remove(randWord);
+            words.remove(randWord);
             failures++;
             notadded = false;
             noPos = 0;
