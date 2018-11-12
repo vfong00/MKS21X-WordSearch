@@ -128,7 +128,7 @@ public class WordSearch {
         return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) < width) && ((r + (rowIncrement * wordLength)) > -1) && ((c + (colIncrement * wordLength)) < height) && ((c + (colIncrement * wordLength)) > -1)) {
+        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= width) && ((r + (rowIncrement * wordLength)) > -1) && ((c + (colIncrement * wordLength)) <= height) && ((c + (colIncrement * wordLength)) > -1)) {
           String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
             if ((this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != '_') && (this.data[c + (i * colIncrement)][r + (i * rowIncrement)] != word.charAt(i))) { // (you can add an or statement to check for perfect word collisions)
