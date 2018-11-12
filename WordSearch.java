@@ -169,7 +169,6 @@ public class WordSearch {
           rInc = randgen.nextInt(3) - 1;
           cInc = randgen.nextInt(3) - 1;
         }
-        System.out.println(randWord);
         while (notadded) {
           noPos++;
           rPos = randgen.nextInt(width - (Math.abs(rInc) * (randWord.length() - 1)));
