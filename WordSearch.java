@@ -194,7 +194,7 @@ public class WordSearch {
         for (int i = 0; i < height; i++) {
           for (int j = 0; j < width; j++) {
             if (data[i][j] == '_') {
-              data[i][j] = alphabet.charAt((int)(Math.random() * 26 + 1));
+              data[i][j] = alphabet.charAt((int)(Math.random() * 26));
             }
           }
         }
