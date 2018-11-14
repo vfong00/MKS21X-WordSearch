@@ -1,5 +1,5 @@
-import java.util.*; //random, scanner, arraylist
-import java.io.*; //file, filenotfoundexception
+import java.util.*;
+import java.io.*;
 
 public class WordSearch {
     private char[][]data;
@@ -14,6 +14,7 @@ public class WordSearch {
     //all words that were successfully added get moved into wordsAdded.
     private ArrayList<String>wordsAdded;
     private ArrayList<String>words;
+    private int longestWordLength;
 
     /**The same as the first constructor but with a given seed
      *for the Random object for word addition.
@@ -23,27 +24,32 @@ public class WordSearch {
      *@param randSeed is the seed for the Random object that initializes the WordSearch
      */
     public WordSearch(int rows,int cols, String filename, int randSeed, String answer) throws FileNotFoundException {
-      if ((rows > 0) && (cols > 0)) {
+      words = new ArrayList<String>();
+      wordsToAdd = new ArrayList<String>();
+      wordsAdded = new ArrayList<String>();
+      longestWordLength = 0;
+
+      File file = new File(filename);
+      Scanner sc = new Scanner(file);
+
+      while (sc.hasNext()) {
+        String newWord = sc.nextLine().toUpperCase();
+        if (newWord.length() > longestWordLength) {
+          longestWordLength = newWord.length();
+        }
+        wordsToAdd.add(newWord);
+        words.add(newWord);
+      }
+
+      if ((rows >= longestWordLength) && (cols >= longestWordLength)) {
         data = new char[rows][cols];
         height = data.length;
         width = data[0].length;
-        words = new ArrayList<String>();
-        wordsToAdd = new ArrayList<String>();
-        wordsAdded = new ArrayList<String>();
         seed = randSeed;
         randgen = new Random(randSeed);
         clear();
 
-        File file = new File(filename);
-        Scanner sc = new Scanner(file);
-
-        while (sc.hasNext()) {
-          String newWord = sc.nextLine().toUpperCase();
-          wordsToAdd.add(newWord);
-          words.add(newWord);
-        }
-
-        this.addAllWords();
+        addAllWords();
 
         boolean showKey = answer.equals("key");
         fillIn(showKey);
@@ -106,7 +112,7 @@ public class WordSearch {
         return false;
       } else {
         int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && ((r + (rowIncrement * wordLength)) <= height) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= width) && ((c + (colIncrement * wordLength)) >= -1)) {
+        if ((r >= 0) && (c >= 0) && (r < height) && (c < width) && ((r + (rowIncrement * wordLength)) <= height) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= width) && ((c + (colIncrement * wordLength)) >= -1)) {
           String atPlace = "";
           for (int i = 0; i < wordLength; i++) {
             if ((data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) {
@@ -128,8 +134,8 @@ public class WordSearch {
     }
 
     /**Function that operates within constructor to add all words.
-    /*If a word cannot be added after 1000 tries of an algorithm (rare),
-    /*it is removedfrom the word list. Otherwise, it is added to a random
+    /*If a word cannot be added after 500 tries of an algorithm (rare),
+    /*it is removed from the word list. Otherwise, it is added to a random
     /*location, with random increments.
     */
     private void addAllWords() {
@@ -169,7 +175,7 @@ public class WordSearch {
             notadded = false;
             noPos = 0;
           }
-          if (noPos > 500) {
+          if (noPos > 500) { // with thanks to CS chat for suggesting to test a LOT more times than 10
             wordsToAdd.remove(randWord);
             words.remove(randWord);
             failures++;
@@ -180,6 +186,11 @@ public class WordSearch {
       }
     }
 
+    /**Function that fills in the WordSearch's spaces where there are not words.
+    /*Depending on the user's request, fills the spaces with blanks (to show answers),
+    /*or with random letters to make an unsolved WordSearch.
+    *@param dispKey is true if the user wants a key, fills letters otherwise.
+    */
     private void fillIn(boolean dispKey) {
       String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       if (dispKey) {
@@ -204,7 +215,10 @@ public class WordSearch {
     public static void main(String[] args) {
       try {
         if (args.length < 3) {
-          System.out.println("not enough args given, must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
+          if (args.length != 0) {
+            System.out.print("not enough args given, ");
+          }
+          System.out.println("format of arguments must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
         } else if (args.length == 3) {
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2], (int) (Math.random() * 100000), "");
           System.out.println(WS);
@@ -221,7 +235,7 @@ public class WordSearch {
         System.out.println("File not found: " + args[2]);
         System.exit(1);
       } catch (IllegalArgumentException e) {
-        System.out.println("non-positive row/column length given, must be 1 or greater");
+        System.out.println("row/column length given is less than the longest word's length in the given word list");
       }
     }
 }
