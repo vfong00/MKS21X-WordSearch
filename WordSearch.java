@@ -15,47 +15,6 @@ public class WordSearch {
     private ArrayList<String>wordsAdded;
     private ArrayList<String>words;
 
-    /**Initialize the grid to the size specified
-     *and fill all of the positions with '_',
-     *then add all the words from the given textfile
-     *randomly, based on a Random object of default seed.
-     *@param row is the starting height of the WordSearch
-     *@param col is the starting width of the WordSearch
-     *@param filename is the textfile from which the words of the WordSearch come from
-     */
-    public WordSearch(int rows,int cols, String filename) {
-      if ((rows > 0) && (cols > 0)) {
-        data = new char[rows][cols];
-        height = data.length;
-        width = data[0].length;
-        words = new ArrayList<String>();
-        wordsToAdd = new ArrayList<String>();
-        wordsAdded = new ArrayList<String>();
-
-        seed = (int) (Math.random()*100000);
-        randgen = new Random(seed);
-        clear();
-
-        try {
-          File file = new File(filename);
-          Scanner sc = new Scanner(file);
-
-          while (sc.hasNext()) {
-            String newWord = sc.nextLine().toUpperCase();
-            wordsToAdd.add(newWord);
-            words.add(newWord);
-          }
-
-          this.addAllWords();
-        } catch (FileNotFoundException e) {
-          System.out.println("File not found: " + filename);
-          System.exit(1);
-        }
-      } else {
-        throw new IllegalArgumentException("error, negative index(es)");
-      }
-    }
-
     /**The same as the first constructor but with a given seed
      *for the Random object for word addition.
      *@param row is the starting height of the WordSearch
@@ -63,7 +22,7 @@ public class WordSearch {
      *@param filename is the textfile from which the words of the WordSearch come from
      *@param randSeed is the seed for the Random object that initializes the WordSearch
      */
-    public WordSearch(int rows,int cols, String filename, int randSeed) {
+    public WordSearch(int rows,int cols, String filename, int randSeed, String answer) {
       if ((rows > 0) && (cols > 0)) {
         data = new char[rows][cols];
         height = data.length;
@@ -220,6 +179,25 @@ public class WordSearch {
             noPos = 0;
           }
         }
+      }
+    }
+
+    public static void main(String[] args) {
+      try {
+        if (args.length < 3) {
+          System.out.println("not enough args given, must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
+        } else if (args.length == 3) {
+          WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2], (int) (Math.random() * 100000), "");
+          System.out.println(WS);
+        } else if (args.length == 4) {
+          WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]),"");
+          System.out.println(WS);
+        } else {
+          WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]), args[4]);
+          System.out.println(WS);
+        }
+      } catch (NumberFormatException e) {
+        System.out.println("invalid format of args given, must be:\nint rows, int columns, textfile of words, (optional) int seed");
       }
     }
 }
