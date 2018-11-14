@@ -34,21 +34,19 @@ public class WordSearch {
         randgen = new Random(randSeed);
         clear();
 
-        try {
-          File file = new File(filename);
-          Scanner sc = new Scanner(file);
+        File file = new File(filename);
+        Scanner sc = new Scanner(file);
 
-          while (sc.hasNext()) {
-            String newWord = sc.nextLine().toUpperCase();
-            wordsToAdd.add(newWord);
-            words.add(newWord);
-          }
-
-          this.addAllWords();
-        } catch (FileNotFoundException e) {
-          System.out.println("File not found: " + filename);
-          System.exit(1);
+        while (sc.hasNext()) {
+          String newWord = sc.nextLine().toUpperCase();
+          wordsToAdd.add(newWord);
+          words.add(newWord);
         }
+
+        this.addAllWords();
+
+        boolean showKey = answer.equals("key");
+        fillIn(showKey);
       } else {
         throw new IllegalArgumentException("error, negative index(es)");
       }
@@ -182,6 +180,14 @@ public class WordSearch {
       }
     }
 
+    private void fillIn(boolean dispKey) {
+      for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+
+        }
+      }
+    }
+
     public static void main(String[] args) {
       try {
         if (args.length < 3) {
@@ -197,7 +203,12 @@ public class WordSearch {
           System.out.println(WS);
         }
       } catch (NumberFormatException e) {
-        System.out.println("invalid format of args given, must be:\nint rows, int columns, textfile of words, (optional) int seed");
+        System.out.println("not enough args given, must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
+      } catch (FileNotFoundException e) {
+        System.out.println("File not found: " + args[2]);
+        System.exit(1);
+      } catch (IllegalArgumentException e) {
+        System.out.println("non-positive row/column length given, must be 1 or greater");
       }
     }
 }
