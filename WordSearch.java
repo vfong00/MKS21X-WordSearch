@@ -22,7 +22,7 @@ public class WordSearch {
      *@param filename is the textfile from which the words of the WordSearch come from
      *@param randSeed is the seed for the Random object that initializes the WordSearch
      */
-    public WordSearch(int rows,int cols, String filename, int randSeed, String answer) {
+    public WordSearch(int rows,int cols, String filename, int randSeed, String answer) throws FileNotFoundException {
       if ((rows > 0) && (cols > 0)) {
         data = new char[rows][cols];
         height = data.length;
@@ -48,7 +48,7 @@ public class WordSearch {
         boolean showKey = answer.equals("key");
         fillIn(showKey);
       } else {
-        throw new IllegalArgumentException("error, negative index(es)");
+        throw new IllegalArgumentException();
       }
     }
 
@@ -181,9 +181,22 @@ public class WordSearch {
     }
 
     private void fillIn(boolean dispKey) {
-      for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-
+      String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      if (dispKey) {
+        for (int i = 0; i < height; i++) {
+          for (int j = 0; j < width; j++) {
+            if (data[i][j] == '_') {
+              data[i][j] = ' ';
+            }
+          }
+        }
+      } else {
+        for (int i = 0; i < height; i++) {
+          for (int j = 0; j < width; j++) {
+            if (data[i][j] == '_') {
+              data[i][j] = alphabet.charAt((int)(Math.random() * 26 + 1));
+            }
+          }
         }
       }
     }
