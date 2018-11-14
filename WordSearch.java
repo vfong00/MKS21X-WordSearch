@@ -31,8 +31,9 @@ public class WordSearch {
         words = new ArrayList<String>();
         wordsToAdd = new ArrayList<String>();
         wordsAdded = new ArrayList<String>();
-        seed = (int) System.currentTimeMillis();
-        randgen = new Random();
+
+        seed = (int) (Math.random()*100000);
+        randgen = new Random(seed);
         clear();
 
         try {
