@@ -220,12 +220,36 @@ public class WordSearch {
           }
           System.out.println("format of arguments must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
         } else if (args.length == 3) {
-          WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2], (int) (Math.random() * 100000), "");
+          if ((Integer.parseInt(args[0]) < 1)) {
+            throw new IllegalArgumentException("rows given is less than 0");
+          }
+          if ((Integer.parseInt(args[1]) < 1)) {
+            throw new IllegalArgumentException("cols given is less than 0");
+          }
+          WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2], (int) (Math.random() * 10000), "");
           System.out.println(WS);
         } else if (args.length == 4) {
+          if ((Integer.parseInt(args[0]) < 1)) {
+            throw new IllegalArgumentException("rows given is less than 0");
+          }
+          if ((Integer.parseInt(args[1]) < 1)) {
+            throw new IllegalArgumentException("cols given is less than 0");
+          }
+          if ((Integer.parseInt(args[3]) < 0) && (Integer.parseInt(args[3]) > 10000)) {
+            throw new IllegalArgumentException("seed must be between [0,10000]");
+          }
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]),"");
           System.out.println(WS);
         } else {
+          if ((Integer.parseInt(args[0]) < 1)) {
+            throw new IllegalArgumentException("rows given is less than 0");
+          }
+          if ((Integer.parseInt(args[1]) < 1)) {
+            throw new IllegalArgumentException("cols given is less than 0");
+          }
+          if ((Integer.parseInt(args[3]) < 0) && (Integer.parseInt(args[3]) > 10000)) {
+            throw new IllegalArgumentException("seed must be between [0,10000]");
+          }
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]), args[4]);
           System.out.println(WS);
         }
@@ -235,7 +259,12 @@ public class WordSearch {
         System.out.println("File not found: " + args[2]);
         System.exit(1);
       } catch (IllegalArgumentException e) {
-        System.out.println("row/column length given is less than the longest word's length in the given word list");
+        String m = e.getMessage();
+        if (m == null) {
+          System.out.println("row/column length given is less than the longest word's length in the given word list");
+        } else {
+          System.out.println(e.getMessage());
+        }
       }
     }
 }
