@@ -110,28 +110,27 @@ public class WordSearch {
       }
       if ((rowIncrement == 0) && (colIncrement == 0)) {
         return false;
-      } else {
-        int wordLength = word.length();
-        if ((r >= 0) && (c >= 0) && (r < height) && (c < width) && ((r + (rowIncrement * wordLength)) <= height) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= width) && ((c + (colIncrement * wordLength)) >= -1)) {
-          String atPlace = "";
-          for (int i = 0; i < wordLength; i++) {
-            if ((data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) {
-              return false;
-            } else {
-              atPlace += data[r + (i * rowIncrement)][c + (i * colIncrement)];
-            }
-          }
-          if (atPlace.equals(word)) {
-            return false;
-          }
-          for (int i = 0; i < wordLength; i++) {
-            data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
-          }
-          return true;
-        }
-        return false;
       }
-    }
+      int wordLength = word.length();
+      if ((r >= 0) && (c >= 0) && (r < height) && (c < width) && ((r + (rowIncrement * wordLength)) <= height) && ((r + (rowIncrement * wordLength)) >= -1) && ((c + (colIncrement * wordLength)) <= width) && ((c + (colIncrement * wordLength)) >= -1)) {
+        String atPlace = "";
+        for (int i = 0; i < wordLength; i++) {
+          if ((data[r + (i * rowIncrement)][c + (i * colIncrement)] != '_') && (data[r + (i * rowIncrement)][c + (i * colIncrement)] != word.charAt(i))) {
+            return false;
+          } else {
+            atPlace += data[r + (i * rowIncrement)][c + (i * colIncrement)];
+          }
+        }
+        if (atPlace.equals(word)) {
+          return false;
+        }
+        for (int i = 0; i < wordLength; i++) {
+          data[r + (i * rowIncrement)][c + (i * colIncrement)] = word.charAt(i);
+        }
+        return true;
+      }
+      return false;
+  }
 
     /**Function that operates within constructor to add all words.
     /*If a word cannot be added after 500 tries of an algorithm (rare),
@@ -152,10 +151,12 @@ public class WordSearch {
         notadded = true;
         wordIndex = randgen.nextInt(wordsToAdd.size());
         randWord = wordsToAdd.get(wordIndex);
+        rInc = randgen.nextInt(3) - 1;
+        cInc = randgen.nextInt(3) - 1;
         // i got real inspired what in tarnation
         while (notadded) {
-          rInc = randgen.nextInt(3) - 1;
-          cInc = randgen.nextInt(3) - 1;
+          // rInc = randgen.nextInt(3) - 1;
+          // cInc = randgen.nextInt(3) - 1;
           while ((rInc == 0) && (cInc == 0)) {
             rInc = randgen.nextInt(3) - 1;
             cInc = randgen.nextInt(3) - 1;
@@ -213,13 +214,24 @@ public class WordSearch {
     }
 
     public static void main(String[] args) {
+      String numbers = "1234567890";
       try {
         if (args.length < 3) {
           if (args.length != 0) {
-            System.out.print("not enough args given, ");
+            System.out.println("not enough args given");
           }
-          System.out.println("format of arguments must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
+          System.out.println("usage: java WordSearch [rows cols filename [randomSeed [answers]]]");
         } else if (args.length == 3) {
+          for (int i = 0; i < args[0].length(); i++) {
+            if (numbers.indexOf(args[0].charAt(i)) == -1) {
+              throw new NumberFormatException("rows given is not a positive integer");
+            }
+          }
+          for (int i = 0; i < args[1].length(); i++) {
+            if (numbers.indexOf(args[1].charAt(i)) == -1) {
+              throw new NumberFormatException("cols given is not a positive integer");
+            }
+          }
           if ((Integer.parseInt(args[0]) < 1)) {
             throw new IllegalArgumentException("rows given is less than 0");
           }
@@ -229,42 +241,75 @@ public class WordSearch {
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2], (int) (Math.random() * 10000), "");
           System.out.println(WS);
         } else if (args.length == 4) {
+          for (int i = 0; i < args[0].length(); i++) {
+            if (numbers.indexOf(args[0].charAt(i)) == -1) {
+              throw new NumberFormatException("rows given is not a positive integer");
+            }
+          }
+          for (int i = 0; i < args[1].length(); i++) {
+            if (numbers.indexOf(args[1].charAt(i)) == -1) {
+              throw new NumberFormatException("cols given is not a positive integer");
+            }
+          }
           if ((Integer.parseInt(args[0]) < 1)) {
             throw new IllegalArgumentException("rows given is less than 0");
           }
           if ((Integer.parseInt(args[1]) < 1)) {
             throw new IllegalArgumentException("cols given is less than 0");
           }
-          if ((Integer.parseInt(args[3]) < 0) && (Integer.parseInt(args[3]) > 10000)) {
+          for (int i = 0; i < args[3].length(); i++) {
+            if (numbers.indexOf(args[3].charAt(i)) == -1) {
+              throw new NumberFormatException("seed given is not a positive integer");
+            }
+          }
+          if ((Integer.parseInt(args[3]) < 0) || (Integer.parseInt(args[3]) > 10000)) {
             throw new IllegalArgumentException("seed must be between [0,10000]");
           }
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]),"");
           System.out.println(WS);
         } else {
+          for (int i = 0; i < args[0].length(); i++) {
+            if (numbers.indexOf(args[0].charAt(i)) == -1) {
+              throw new NumberFormatException("rows given is not a positive integer");
+            }
+          }
+          for (int i = 0; i < args[1].length(); i++) {
+            if (numbers.indexOf(args[1].charAt(i)) == -1) {
+              throw new NumberFormatException("cols given is not a positive integer");
+            }
+          }
           if ((Integer.parseInt(args[0]) < 1)) {
             throw new IllegalArgumentException("rows given is less than 0");
           }
           if ((Integer.parseInt(args[1]) < 1)) {
             throw new IllegalArgumentException("cols given is less than 0");
           }
-          if ((Integer.parseInt(args[3]) < 0) && (Integer.parseInt(args[3]) > 10000)) {
+          for (int i = 0; i < args[3].length(); i++) {
+            if (numbers.indexOf(args[3].charAt(i)) == -1) {
+              throw new NumberFormatException("seed given is not a positive integer");
+            }
+          }
+          if ((Integer.parseInt(args[3]) < 0) || (Integer.parseInt(args[3]) > 10000)) {
             throw new IllegalArgumentException("seed must be between [0,10000]");
           }
           WordSearch WS = new WordSearch(Integer.parseInt(args[0]),Integer.parseInt(args[1]),args[2],Integer.parseInt(args[3]), args[4]);
           System.out.println(WS);
         }
       } catch (NumberFormatException e) {
-        System.out.println("not enough args given, must be:\ninteger rows, integer columns, textfile of words, (optional) integer seed, (optional) \"key\"");
+        String m = e.getMessage();
+        if (m != null) {
+          System.out.println(e.getMessage());
+        }
+        System.out.println("usage: java WordSearch [rows cols filename [randomSeed [answers]]]");
       } catch (FileNotFoundException e) {
         System.out.println("File not found: " + args[2]);
         System.exit(1);
       } catch (IllegalArgumentException e) {
         String m = e.getMessage();
-        if (m == null) {
-          System.out.println("row/column length given is less than the longest word's length in the given word list");
-        } else {
+        if (m != null) {
           System.out.println(e.getMessage());
         }
+        System.out.println("row/column length given is less than the longest word's length in the given word list");
       }
     }
 }
